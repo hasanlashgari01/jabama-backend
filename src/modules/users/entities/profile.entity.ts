@@ -1,21 +1,35 @@
-import {Column, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Gender } from "../enum/user.enum";
+import { User } from "./user.entity";
 
-export class User {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+@Entity()
+export class Profile {
+  @PrimaryGeneratedColumn("increment")
+  id: number;
 
-    @Column({unique: true, nullable: true})
-    email: string;
+  @Column({ nullable: true })
+  first_name: string;
 
-    @Column()
-    first_name: string;
+  @Column({ nullable: true })
+  last_name: string;
 
-    @Column()
-    last_name: string;
+  @Column({ nullable: true })
+  avatar: string;
 
-    @Column({unique: true, nullable: true})
-    national_code: string;
+  @Column({ nullable: true })
+  national_code: string;
 
-    @Column()
-    
+  @Column({ type: "enum", enum: Gender, default: null })
+  gender: Gender | null;
+
+  @Column({ type: "date", nullable: true })
+  birthday: Date;
+
+  @Column({ nullable: true })
+  bio: string;
+
+  @Column()
+  userId: number;
+  @OneToOne(() => User, (user) => user.profile, { onDelete: "CASCADE" })
+  user: User;
 }
