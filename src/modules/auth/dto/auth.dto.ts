@@ -7,7 +7,7 @@ export class SendCodeDto {
     mobile: string;
 }
 
-export class ValidateCodeDto extends SendCodeDto {
+export class ValidateCodeDto {
     @ApiProperty({ example: "" })
     @IsString()
     @Length(4, 4)

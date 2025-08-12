@@ -14,6 +14,7 @@ import { SendCodeDto, ValidateCodeDto } from "./dto/auth.dto";
 import { TokenPayload } from "./types/payload.type";
 import { ConfigService } from "@nestjs/config";
 import * as bcrypt from "bcrypt";
+import { RedisService } from "./redis.service";
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
         @InjectRepository(Otp) private otpRepository: Repository<Otp>,
         private jwtService: JwtService,
         private configService: ConfigService,
+        private readonly redisService: RedisService,
     ) {}
 
     async sendCode(sendCodeDto: SendCodeDto) {
@@ -39,6 +41,8 @@ export class AuthService {
             user = await this.userRepository.save(newUser);
         }
 
+        await this.redisService.setValue("mobile", mobile, 120);
+
         const otp = await this.generateAndSaveOtp(user.id);
         if (!user.otp) {
             await this.userRepository.update(user.id, {
@@ -52,7 +56,9 @@ export class AuthService {
     }
 
     async validateCode(validateCodeDto: ValidateCodeDto) {
-        const { mobile, code } = validateCodeDto;
+        const { code } = validateCodeDto;
+
+        const mobile = await this.redisService.getValue("mobile");
 
         const user = await this.userRepository.findOneBy({
             mobile_number: mobile,

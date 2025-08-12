@@ -10,11 +10,13 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post("/send-code")
+    @ApiConsumes("application/x-www-form-urlencoded")
     sendCode(@Body() sendCodeDto: SendCodeDto) {
         return this.authService.sendCode(sendCodeDto);
     }
 
     @Post("/validate-code")
+    @ApiConsumes("application/x-www-form-urlencoded")
     validateCode(@Body() validateCodeDto: ValidateCodeDto) {
         return this.authService.validateCode(validateCodeDto);
     }
