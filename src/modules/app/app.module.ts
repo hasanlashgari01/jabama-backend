@@ -7,14 +7,14 @@ import { TypeOrmConfig } from "../../configs/typeorm.config";
 import { UsersModule } from "../users/users.module";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRoot(TypeOrmConfig()),
-    UsersModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        TypeOrmModule.forRoot(TypeOrmConfig()),
+        UsersModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}
