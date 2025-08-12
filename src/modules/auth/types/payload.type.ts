@@ -1,7 +1,4 @@
-export type AccessTokenPayload = {
-    userId: number;
+export type TokenPayload = {
+    sub: string;
 };
 
-export type RefreshTokenPayload = {
-    userId: number;
-};
