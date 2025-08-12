@@ -3,6 +3,7 @@ import { AuthService } from "./auth.service";
 import { SendCodeDto, ValidateCodeDto } from "./dto/auth.dto";
 import { JwtAuthGuard } from "./guards/auth.guard";
 import { RefreshAuthGuard } from "./guards/refresh-auth.guard";
+import { ApiBearerAuth, ApiConsumes } from "@nestjs/swagger";
 
 @Controller("auth")
 export class AuthController {
@@ -19,12 +20,14 @@ export class AuthController {
     }
 
     @UseGuards(RefreshAuthGuard)
+    @ApiBearerAuth("Authorization")
     @Post("refresh")
     refresh(@Req() req) {
         return this.authService.generateTokens(req.user.mobile_number);
     }
 
     @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth("Authorization")
     @Get("me")
     getProfile(@Req() req) {
         return req.user;

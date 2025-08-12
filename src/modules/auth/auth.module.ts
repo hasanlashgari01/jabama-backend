@@ -8,9 +8,14 @@ import { JwtModule } from "@nestjs/jwt";
 import { UsersService } from "../users/users.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { RefreshJwtStrategy } from "./strategies/refresh-jwt.strategy";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, Otp]), JwtModule.register({})],
+    imports: [
+        TypeOrmModule.forFeature([User, Otp]),
+        JwtModule.register({}),
+        ConfigModule.forRoot({ isGlobal: true }),
+    ],
     controllers: [AuthController],
     providers: [AuthService, UsersService, JwtStrategy, RefreshJwtStrategy],
 })

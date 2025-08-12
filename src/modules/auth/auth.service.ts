@@ -13,7 +13,7 @@ import { User } from "../users/entities/user.entity";
 import { SendCodeDto, ValidateCodeDto } from "./dto/auth.dto";
 import { TokenPayload } from "./types/payload.type";
 import { ConfigService } from "@nestjs/config";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
@@ -31,12 +31,20 @@ export class AuthService {
             mobile_number: mobile,
         });
         if (!user) {
-            user = await this.userRepository.save(
-                this.userRepository.create({ mobile_number: mobile }),
-            );
+            const newUser = this.userRepository.create({
+                mobile_number: mobile,
+                email: `${mobile}@gmail.com`,
+            });
+
+            user = await this.userRepository.save(newUser);
         }
 
-        await this.generateAndSaveOtp(user.id);
+        const otp = await this.generateAndSaveOtp(user.id);
+        if (!user.otp) {
+            await this.userRepository.update(user.id, {
+                otp: otp,
+            });
+        }
 
         return {
             mobile,
@@ -77,22 +85,25 @@ export class AuthService {
         const hashedOtp = await bcrypt.hash(plainOtp, 10);
 
         let otp = await this.otpRepository.findOneBy({ userId });
-        if (otp) {
-            otp.code = hashedOtp;
-            otp.expires_In = new Date(Date.now() + otpTime);
-            otp.is_used = false;
-        } else {
+
+        if (!otp) {
             otp = this.otpRepository.create({
                 code: hashedOtp,
                 expires_In: new Date(Date.now() + otpTime),
                 is_used: false,
                 userId,
             });
+        } else {
+            otp.code = hashedOtp;
+            otp.expires_In = new Date(Date.now() + otpTime);
+            otp.is_used = false;
         }
 
-        await this.otpRepository.save(otp);
+        const savedOtp = await this.otpRepository.save(otp);
 
-        console.log(`OTP for ${userId}: ${plainOtp}`);
+        console.log(`OTP for user ${userId}: ${plainOtp}`);
+
+        return savedOtp;
     }
 
     generateTokens(mobile: string): { access_token: string; refresh_token: string } {

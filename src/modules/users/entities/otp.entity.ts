@@ -6,7 +6,7 @@ export class Otp {
     @PrimaryGeneratedColumn("increment")
     id: number;
 
-    @Column({ length: 4 })
+    @Column()
     code: string;
 
     @Column()

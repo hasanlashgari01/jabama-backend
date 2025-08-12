@@ -23,4 +23,4 @@ async function bootstrap() {
         console.log(`http://localhost:${PORT}/swagger`);
     });
 }
-await bootstrap();
+bootstrap();
