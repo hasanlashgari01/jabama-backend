@@ -1,4 +1,4 @@
-import { IsMobilePhone, Length } from "class-validator";
+import { IsMobilePhone, IsString, Length } from "class-validator";
 
 export class SendCodeDto {
     @IsMobilePhone("fa-IR")
@@ -6,6 +6,7 @@ export class SendCodeDto {
 }
 
 export class ValidateCodeDto extends SendCodeDto {
+    @IsString()
     @Length(4, 4)
     code: string;
 }
