@@ -63,7 +63,7 @@ export class AuthService {
         const user = await this.userRepository.findOneBy({
             mobile_number: mobile,
         });
-        if (!user) throw new UnauthorizedException("مجددا لاگین کنید");
+        if (!user) throw new UnauthorizedException("نیاز به احراز هویت دارد");
         const otp = await this.otpRepository.findOneBy({
             userId: user.id,
         });
@@ -141,12 +141,12 @@ export class AuthService {
                 const user = await this.userRepository.findOneBy({
                     mobile_number: payload.sub,
                 });
-                if (!user) new UnauthorizedException("مجددا لاگین کنید");
+                if (!user) new UnauthorizedException("نیاز به احراز هویت دارد");
 
                 return user;
             }
         } catch (error) {
-            throw new UnauthorizedException("مجددا لاگین کنید");
+            throw new UnauthorizedException("نیاز به احراز هویت دارد");
         }
     }
 
@@ -160,12 +160,12 @@ export class AuthService {
                 const user = await this.userRepository.findOneBy({
                     mobile_number: payload.sub,
                 });
-                if (!user) new UnauthorizedException("مجددا لاگین کنید");
+                if (!user) new UnauthorizedException("نیاز به احراز هویت دارد");
 
                 return user;
             }
         } catch (error) {
-            throw new UnauthorizedException("مجددا لاگین کنید");
+            throw new UnauthorizedException("نیاز به احراز هویت دارد");
         }
     }
 }

@@ -1,14 +1,11 @@
 import { Module } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { AuthController } from "./auth.controller";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "../users/entities/user.entity";
 import { Otp } from "../users/entities/otp.entity";
-import { JwtModule } from "@nestjs/jwt";
-import { UsersService } from "../users/users.service";
-import { JwtStrategy } from "./strategies/jwt.strategy";
-import { RefreshJwtStrategy } from "./strategies/refresh-jwt.strategy";
-import { ConfigModule } from "@nestjs/config";
+import { User } from "../users/entities/user.entity";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
 import { RedisService } from "./redis.service";
 
 @Module({
@@ -18,6 +15,7 @@ import { RedisService } from "./redis.service";
         ConfigModule.forRoot({ isGlobal: true }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, UsersService, JwtStrategy, RefreshJwtStrategy, RedisService],
+    providers: [AuthService, JwtService, ConfigService, RedisService],
+    exports: [AuthService, JwtService, TypeOrmModule],
 })
 export class AuthModule {}

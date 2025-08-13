@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 
     async validate(payload: TokenPayload) {
         const user = await this.usersService.findByMobile(payload.sub, false);
-        if (!user) throw new UnauthorizedException("مجددا لاگین کنید");
+        if (!user) throw new UnauthorizedException("نیاز به احراز هویت دارد");
 
         return user;
     }

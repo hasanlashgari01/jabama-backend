@@ -25,7 +25,7 @@ export class RefreshJwtStrategy extends PassportStrategy(Strategy, "jwt-refresh"
     async validate(payload: TokenPayload) {
         const user = await this.usersService.findByMobile(payload.sub);
         if (!user) {
-            throw new UnauthorizedException("مجددا لاگین کنید");
+            throw new UnauthorizedException("نیاز به احراز هویت دارد");
         }
         return user;
     }
