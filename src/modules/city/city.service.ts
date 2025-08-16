@@ -5,7 +5,7 @@ import { UpdateCityDto } from "./dto/update-city.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Province } from "../province/entities/province.entity";
 import { City } from "./entities/city.entity";
-import { Repository } from "typeorm";
+import { DeepPartial, Repository } from "typeorm";
 
 @Injectable()
 export class CityService {
@@ -71,8 +71,32 @@ export class CityService {
     return province;
   }
 
-  update(id: number, updateCityDto: UpdateCityDto) {
-    return `This action updates a #${id} city`;
+  async update(id: number, updateCityDto: UpdateCityDto) {
+    const { name, name_en, slug, province_id, lat, lng } = updateCityDto;
+    const updateObject: DeepPartial<City> = {};
+
+    if (name_en) {
+      const isExistEnglishName = await this.findOneByEnglishName(name_en);
+      if (isExistEnglishName) throw new ConflictException("شهر مورد نظر وجود دارد");
+
+      updateObject.name_en = name_en;
+    }
+    if (slug) {
+      const isExistSlug = await this.findOneBySlug(slug);
+      if (isExistSlug) throw new ConflictException("شهر مورد نظر وجود دارد");
+
+      updateObject.slug = slug;
+    }
+    if (name) updateObject.name = name;
+    if (province_id) updateObject.province_id = province_id;
+    if (lat) updateObject.lat = lat;
+    if (lng) updateObject.lng = lng;
+
+    await this.cityRepository.update({ id }, updateObject);
+
+    return {
+      message: "شهر مورد نظر با موفقیت به روز رسانی شد",
+    };
   }
 
   async remove(id: number) {
