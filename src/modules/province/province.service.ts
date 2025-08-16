@@ -1,12 +1,11 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import slugify from "slugify";
+import { paginationGenerator, paginationSolver } from "src/common/validations/pagination.util";
 import { DeepPartial, Repository } from "typeorm";
 import { CreateProvinceDto } from "./dto/create-province.dto";
+import { SearchProvinceDto } from "./dto/search-province.dto";
 import { UpdateProvinceDto } from "./dto/update-province.dto";
 import { Province } from "./entities/province.entity";
-import { SearchProvinceDto } from "./dto/search-province.dto";
-import { paginationGenerator, paginationSolver } from "src/common/validations/pagination.util";
 
 @Injectable()
 export class ProvinceService {
