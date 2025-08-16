@@ -6,6 +6,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Province } from "../province/entities/province.entity";
 import { City } from "./entities/city.entity";
 import { DeepPartial, Repository } from "typeorm";
+import { paginationGenerator, paginationSolver } from "src/common/validations/pagination.util";
+import { SearchCityDto } from "./dto/search-city.dto";
 
 @Injectable()
 export class CityService {
@@ -37,8 +39,35 @@ export class CityService {
     };
   }
 
-  findAll() {
-    return `This action returns all city`;
+  async findAll(searchCityDto: SearchCityDto) {
+    const { page, limit, skip } = paginationSolver({
+      page: searchCityDto.page,
+      limit: searchCityDto.limit,
+    });
+
+    const qb = this.cityRepository.createQueryBuilder("city");
+
+    if (searchCityDto.q) {
+      const q = `%${searchCityDto.q.trim()}%`;
+      qb.andWhere("(city.name ILIKE :q OR city.name_en ILIKE :q OR city.slug ILIKE :q)", { q });
+    }
+
+    const allowedSort = ["name", "created_at", "updated_at", "id", "slug"];
+    let sort = "name";
+    if (searchCityDto.sort && allowedSort.includes(searchCityDto.sort)) {
+      sort = searchCityDto.sort;
+    }
+    const order: "ASC" | "DESC" = searchCityDto.order === "DESC" ? "DESC" : "ASC";
+    qb.orderBy(`city.${sort}`, order as "ASC" | "DESC");
+
+    qb.skip(skip).take(limit);
+
+    const [data, total] = await qb.getManyAndCount();
+
+    return {
+      data,
+      pagination: paginationGenerator(total, page, limit),
+    };
   }
 
   async findOneById(id: number) {

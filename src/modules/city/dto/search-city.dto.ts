@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsIn, IsOptional, IsString } from "class-validator";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 
-export class SearchProvinceDto extends PaginationDto {
+export class SearchCityDto extends PaginationDto {
   @ApiPropertyOptional({ example: "" })
   @IsOptional()
   @IsString()
