@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import slugify from "slugify";
-import { Repository } from "typeorm";
+import { DeepPartial, Repository } from "typeorm";
 import { CreateProvinceDto } from "./dto/create-province.dto";
 import { UpdateProvinceDto } from "./dto/update-province.dto";
 import { Province } from "./entities/province.entity";
@@ -28,7 +28,6 @@ export class ProvinceService {
     });
 
     return {
-      ok: true,
       message: "استان جدید با موفقیت ایجاد شد",
     };
   }
@@ -97,8 +96,29 @@ export class ProvinceService {
     return province;
   }
 
-  update(id: number, updateProvinceDto: UpdateProvinceDto) {
-    return `This action updates a #${id} province`;
+  async update(id: number, updateProvinceDto: UpdateProvinceDto) {
+    const { name, name_en, slug } = updateProvinceDto;
+    const updateObject: DeepPartial<Province> = {};
+
+    if (name_en) {
+      const isExistEnglishName = await this.findOneByEnglishName(name_en);
+      if (isExistEnglishName) throw new ConflictException("استان مورد نظر وجود دارد");
+
+      updateObject.name_en = name_en;
+    }
+    if (slug) {
+      const isExistSlug = await this.findOneBySlug(slug);
+      if (isExistSlug) throw new ConflictException("استان مورد نظر وجود دارد");
+
+      updateObject.slug = slug;
+    }
+    updateObject.name = name;
+
+    await this.provinceRepository.update({ id }, updateObject);
+
+    return {
+      message: "استان مورد نظر با موفقیت به روز رسانی شد",
+    };
   }
 
   async remove(id: number) {
@@ -107,7 +127,6 @@ export class ProvinceService {
     await this.provinceRepository.remove(province);
 
     return {
-      ok: true,
       message: "استان مورد نظر با موفقیت حذف شد",
     };
   }
