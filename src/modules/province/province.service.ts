@@ -111,7 +111,7 @@ export class ProvinceService {
 
       updateObject.slug = slug;
     }
-    updateObject.name = name;
+    if (name) updateObject.name = name;
 
     await this.provinceRepository.update({ id }, updateObject);
 
