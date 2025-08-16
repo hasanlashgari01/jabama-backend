@@ -75,7 +75,13 @@ export class CityService {
     return `This action updates a #${id} city`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} city`;
+  async remove(id: number) {
+    const city = await this.findOneById(id);
+    if (!city) throw new NotFoundException("شهر مورد نظر پیدا نشد");
+    await this.cityRepository.remove(city);
+
+    return {
+      message: "شهر مورد نظر با موفقیت حذف شد",
+    };
   }
 }
