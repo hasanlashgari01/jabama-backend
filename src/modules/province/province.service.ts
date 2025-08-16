@@ -1,19 +1,100 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProvinceDto } from './dto/create-province.dto';
-import { UpdateProvinceDto } from './dto/update-province.dto';
+import { ConflictException, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import slugify from "slugify";
+import { Repository } from "typeorm";
+import { CreateProvinceDto } from "./dto/create-province.dto";
+import { UpdateProvinceDto } from "./dto/update-province.dto";
+import { Province } from "./entities/province.entity";
+import { SearchProvinceDto } from "./dto/search-province.dto";
+import { paginationGenerator, paginationSolver } from "src/common/validations/pagination.util";
 
 @Injectable()
 export class ProvinceService {
-  create(createProvinceDto: CreateProvinceDto) {
-    return 'This action adds a new province';
+  constructor(
+    @InjectRepository(Province) private readonly provinceRepository: Repository<Province>,
+  ) {}
+
+  async create(createProvinceDto: CreateProvinceDto) {
+    const { name, name_en, slug } = createProvinceDto;
+
+    const isExistEnglishName = await this.findOneByEnglishName(name_en);
+    const isExistSlug = await this.findOneBySlug(slug);
+    if (isExistEnglishName || isExistSlug) throw new ConflictException("استان مورد نظر وجود دارد");
+
+    await this.provinceRepository.insert({
+      name,
+      name_en,
+      slug,
+    });
+
+    return {
+      ok: true,
+      message: "استان جدید با موفقیت ایجاد شد",
+    };
   }
 
-  findAll() {
-    return `This action returns all province`;
+  async findAll(searchProvinceDto: SearchProvinceDto) {
+    const { page, limit, skip } = paginationSolver({
+      page: searchProvinceDto.page,
+      limit: searchProvinceDto.limit,
+    });
+
+    const qb = this.provinceRepository.createQueryBuilder("province");
+
+    if (searchProvinceDto.q) {
+      const q = `%${searchProvinceDto.q.trim()}%`;
+      qb.andWhere(
+        "(province.name ILIKE :q OR province.name_en ILIKE :q OR province.slug ILIKE :q)",
+        { q },
+      );
+    }
+
+    const allowedSort = ["name", "created_at", "updated_at", "id", "slug"];
+    let sort = "name";
+    if (searchProvinceDto.sort && allowedSort.includes(searchProvinceDto.sort)) {
+      sort = searchProvinceDto.sort;
+    }
+    const order: "ASC" | "DESC" = searchProvinceDto.order === "DESC" ? "DESC" : "ASC";
+    qb.orderBy(`province.${sort}`, order as "ASC" | "DESC");
+
+    qb.skip(skip).take(limit);
+
+    const [data, total] = await qb.getManyAndCount();
+
+    return {
+      data,
+      pagination: paginationGenerator(total, page, limit),
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} province`;
+  async findOneById(id: number) {
+    const province = await this.provinceRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return province;
+  }
+
+  async findOneBySlug(slug: string) {
+    const province = await this.provinceRepository.findOne({
+      where: {
+        slug,
+      },
+    });
+
+    return province;
+  }
+
+  async findOneByEnglishName(enName: string) {
+    const province = await this.provinceRepository.findOne({
+      where: {
+        name_en: enName.trim(),
+      },
+    });
+
+    return province;
   }
 
   update(id: number, updateProvinceDto: UpdateProvinceDto) {

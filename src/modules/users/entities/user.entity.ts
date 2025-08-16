@@ -1,37 +1,41 @@
+import { Role } from "src/common/enum/user.enum";
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    OneToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
-import { Profile } from "./profile.entity";
 import { Otp } from "./otp.entity";
+import { Profile } from "./profile.entity";
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn("increment")
-    id: number;
+  @PrimaryGeneratedColumn("increment")
+  id: number;
 
-    @Column({ unique: true })
-    mobile_number: string;
+  @Column({ unique: true })
+  mobile_number: string;
 
-    @Column({ unique: true })
-    email: string;
+  @Column({ unique: true })
+  email: string;
 
-    @OneToOne(() => Profile, (profile) => profile.user, { nullable: true })
-    @JoinColumn()
-    profile: Profile;
+  @Column({ type: "enum", enum: Role, default: Role.USER })
+  role: Role;
 
-    @OneToOne(() => Otp, (otp) => otp.user, { nullable: true })
-    @JoinColumn()
-    otp: Otp;
+  @OneToOne(() => Profile, (profile) => profile.user, { nullable: true })
+  @JoinColumn()
+  profile: Profile;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @OneToOne(() => Otp, (otp) => otp.user, { nullable: true })
+  @JoinColumn()
+  otp: Otp;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
