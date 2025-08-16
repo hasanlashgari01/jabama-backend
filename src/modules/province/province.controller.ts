@@ -23,11 +23,6 @@ export class ProvinceController {
     return this.provinceService.findAll(searchProvinceDto);
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.provinceService.findOneById(+id);
-  }
-
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateProvinceDto: UpdateProvinceDto) {
     return this.provinceService.update(+id, updateProvinceDto);

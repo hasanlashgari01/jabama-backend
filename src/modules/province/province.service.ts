@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import slugify from "slugify";
 import { Repository } from "typeorm";
@@ -101,7 +101,14 @@ export class ProvinceService {
     return `This action updates a #${id} province`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} province`;
+  async remove(id: number) {
+    const province = await this.findOneById(id);
+    if (!province) throw new NotFoundException("استان مورد نظر پیدا نشد");
+    await this.provinceRepository.remove(province);
+
+    return {
+      ok: true,
+      message: "استان مورد نظر با موفقیت حذف شد",
+    };
   }
 }
