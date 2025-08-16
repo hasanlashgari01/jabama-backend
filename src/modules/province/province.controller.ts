@@ -12,7 +12,7 @@ export class ProvinceController {
   constructor(private readonly provinceService: ProvinceService) {}
 
   @Post()
-  @Authorization()
+  // @Authorization()
   @ApiConsumes(FormType.Urlencoded)
   create(@Body() createProvinceDto: CreateProvinceDto) {
     return this.provinceService.create(createProvinceDto);
