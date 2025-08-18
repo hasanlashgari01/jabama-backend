@@ -1,4 +1,4 @@
-import { Body, Controller, Put, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Param, Put, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiConsumes } from "@nestjs/swagger";
 import { Authorization } from "src/common/decorators/auth.decorator";
@@ -9,16 +9,22 @@ import { UsersService } from "./users.service";
 
 @Controller("users")
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-    @Put("/profile")
-    @Authorization()
-    @ApiConsumes(FormType.Multipart)
-    @UseInterceptors(FileInterceptor("avatar"))
-    updateProfile(
-        @UploadedFile(new FileValidationPipe()) avatarFile: Express.Multer.File,
-        @Body() profileDto: ProfileDto,
-    ) {
-        return this.usersService.updateProfile(avatarFile, profileDto);
-    }
+  @Put("/profile")
+  @Authorization()
+  @ApiConsumes(FormType.Multipart)
+  @UseInterceptors(FileInterceptor("avatar"))
+  updateProfile(
+    @UploadedFile(new FileValidationPipe()) avatarFile: Express.Multer.File,
+    @Body() profileDto: ProfileDto,
+  ) {
+    return this.usersService.updateProfile(avatarFile, profileDto);
+  }
+
+  @Get("/profile")
+  @Authorization()
+  getProfile() {
+    return this.usersService.getProfile();
+  }
 }

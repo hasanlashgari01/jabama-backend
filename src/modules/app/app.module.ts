@@ -10,18 +10,18 @@ import { ProvinceModule } from "../province/province.module";
 import { UsersModule } from "../users/users.module";
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-            envFilePath: ".env",
-        }),
-        TypeOrmModule.forRoot(TypeOrmConfig()),
-        AuthModule,
-        UsersModule,
-        CityModule,
-        ProvinceModule,
-    ],
-    controllers: [],
-    providers: [AuthService, RedisService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ".env",
+    }),
+    TypeOrmModule.forRoot(TypeOrmConfig()),
+    AuthModule,
+    UsersModule,
+    CityModule,
+    ProvinceModule,
+  ],
+  controllers: [],
+  providers: [AuthService, RedisService],
 })
 export class AppModule {}

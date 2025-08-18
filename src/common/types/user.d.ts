@@ -1,5 +1,5 @@
 interface UserPayload {
-    sub: string;
+    sub: number;
 }
 
 declare global {

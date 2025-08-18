@@ -27,8 +27,8 @@ export class Accommodation {
   @Column()
   description_tip: string;
 
-  @Column()
-  amenities: string[];
+  // @Column()
+  // amenities: string[];
 
   @Column()
   hostId: number;

@@ -96,6 +96,9 @@ export class ProvinceService {
   }
 
   async update(id: number, updateProvinceDto: UpdateProvinceDto) {
+    const province = await this.findOneById(id);
+    if (!province) throw new NotFoundException("استان مورد نظر پیدا نشد");
+
     const { name, name_en, slug } = updateProvinceDto;
     const updateObject: DeepPartial<Province> = {};
 
