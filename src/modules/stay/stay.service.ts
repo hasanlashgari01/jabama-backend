@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { CreateStayDto } from './dto/create-stay.dto';
-import { UpdateStayDto } from './dto/update-stay.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CreateStayDto } from "./dto/create-stay.dto";
+import { UpdateStayDto } from "./dto/update-stay.dto";
+import { Stay } from "./entities/stay.entity";
 
 @Injectable()
 export class StayService {
+  constructor(@InjectRepository(Stay) private stayRepository: Repository<Stay>) {}
+
   create(createStayDto: CreateStayDto) {
-    return 'This action adds a new stay';
+    return "This action adds a new stay";
   }
 
   findAll() {
