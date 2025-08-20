@@ -19,9 +19,9 @@ export class CreateCityDto {
 
   @ApiProperty()
   @IsNumber()
-  lat: number;
+  latitude: number;
   
   @ApiProperty()
   @IsNumber()
-  lng: number;
+  longitude: number;
 }

@@ -17,7 +17,7 @@ export class CityService {
   ) {}
 
   async create(createCityDto: CreateCityDto) {
-    const { name, name_en, slug, province_id, lat, lng } = createCityDto;
+    const { name, name_en, slug, province_id, latitude, longitude } = createCityDto;
 
     const existProvince = await this.provinceSerivce.findOneById(province_id);
     if (!existProvince) throw new NotFoundException("استان مورد نظر یافت نشد");
@@ -30,8 +30,8 @@ export class CityService {
       name_en,
       slug,
       province_id,
-      lat,
-      lng,
+      latitude,
+      longitude,
     });
 
     return {
@@ -101,7 +101,7 @@ export class CityService {
   }
 
   async update(id: number, updateCityDto: UpdateCityDto) {
-    const { name, name_en, slug, province_id, lat, lng } = updateCityDto;
+    const { name, name_en, slug, province_id, latitude, longitude } = updateCityDto;
     const updateObject: DeepPartial<City> = {};
 
     if (name_en) {
@@ -118,8 +118,8 @@ export class CityService {
     }
     if (name) updateObject.name = name;
     if (province_id) updateObject.province_id = province_id;
-    if (lat) updateObject.lat = lat;
-    if (lng) updateObject.lng = lng;
+    if (latitude) updateObject.latitude = latitude;
+    if (longitude) updateObject.longitude = longitude;
 
     await this.cityRepository.update({ id }, updateObject);
 
