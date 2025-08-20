@@ -4,12 +4,16 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Otp } from "./otp.entity";
 import { Profile } from "./profile.entity";
+import { Stay } from "src/modules/stay/entities/stay.entity";
+import { StayReview } from "src/modules/stay/entities/stay-review.entity";
+import { StayBooking } from "src/modules/stay/entities/stay-booking.entity";
 
 @Entity()
 export class User {
@@ -32,6 +36,15 @@ export class User {
   @OneToOne(() => Otp, (otp) => otp.user, { nullable: true })
   @JoinColumn()
   otp: Otp;
+
+  @OneToMany(() => Stay, (stay) => stay.host)
+  stays: Stay[];
+
+  @OneToMany(() => StayReview, (stayReview) => stayReview.user)
+  reviews: StayReview[];
+
+  @OneToMany(() => StayBooking, (stayBooking) => stayBooking.guest)
+  bookings: StayBooking[];
 
   @CreateDateColumn()
   created_at: Date;

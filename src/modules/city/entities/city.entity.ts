@@ -1,5 +1,14 @@
 import { Province } from "src/modules/province/entities/province.entity";
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Stay } from "src/modules/stay/entities/stay.entity";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class City {
@@ -16,19 +25,22 @@ export class City {
   @Column({ type: "varchar", length: 180 })
   slug: string;
 
-  @ManyToOne(() => Province, (p) => p.cities, { nullable: true, onDelete: "SET NULL" })
-  @JoinColumn({ name: "province_id" })
-  province?: Province | null;
-
-  @Column({ type: "int", nullable: true })
-  province_id?: number | null;
+  @Column({ type: "decimal", precision: 10, scale: 6, nullable: true })
+  latitude: number | null;
 
   @Column({ type: "decimal", precision: 10, scale: 6, nullable: true })
-  lat: number | null;
-
-  @Column({ type: "decimal", precision: 10, scale: 6, nullable: true })
-  lng: number | null;
+  longitude: number | null;
 
   @Column({ type: "boolean", default: true })
   is_active: boolean;
+
+  @ManyToOne(() => Province, (p) => p.cities, { onDelete: "SET NULL" })
+  province: Province;
+
+  @Column({ type: "int" })
+  province_id: number;
+
+  @OneToMany(() => Stay, (stay) => stay.city)
+  @JoinColumn({ name: "city_id" })
+  stays: Stay[];
 }
