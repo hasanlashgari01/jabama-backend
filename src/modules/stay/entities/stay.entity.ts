@@ -69,6 +69,9 @@ export class Stay {
   @ManyToOne(() => User, (user) => user.stays)
   host: User;
 
+  @Column()
+  host_id: number;
+
   @ManyToOne(() => City, (city) => city.stays, { onDelete: "SET NULL" })
   city: City;
 

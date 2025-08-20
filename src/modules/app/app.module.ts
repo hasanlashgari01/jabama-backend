@@ -8,6 +8,7 @@ import { RedisService } from "../auth/redis.service";
 import { CityModule } from "../city/city.module";
 import { ProvinceModule } from "../province/province.module";
 import { UsersModule } from "../users/users.module";
+import { StayModule } from "../stay/stay.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from "../users/users.module";
     UsersModule,
     CityModule,
     ProvinceModule,
+    StayModule,
   ],
   controllers: [],
   providers: [AuthService, RedisService],
