@@ -9,6 +9,9 @@ export class StayPhoto {
   @Column()
   url: string;
 
+  @Column()
+  key: string;
+
   @Column({ default: false })
   is_main: boolean;
 
