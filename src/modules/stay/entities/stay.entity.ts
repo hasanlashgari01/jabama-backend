@@ -39,9 +39,6 @@ export class Stay {
   @Column({ type: "enum", enum: StayArea })
   area: StayArea;
 
-  @Column({ length: 100, nullable: true })
-  province: string;
-
   @Column({ type: "decimal", precision: 10, scale: 8, nullable: true })
   latitude: number;
 
