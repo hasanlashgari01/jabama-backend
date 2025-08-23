@@ -25,6 +25,11 @@ export class AmenityCategoryController {
     return this.amenityCategoryService.getCategories();
   }
 
+  @Get("/amenities")
+  getCategoriesWithAmenities() {
+    return this.amenityCategoryService.getCategoriesWithAmenities();
+  }
+
   @Put(":id")
   @RoleAccess(Role.ADMIN, Role.MODERATOR)
   @ApiConsumes(FormType.Json, FormType.Multipart)

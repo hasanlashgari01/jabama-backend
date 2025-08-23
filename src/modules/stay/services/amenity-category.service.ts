@@ -32,6 +32,17 @@ export class AmenityCategoryService {
     return this.amenityCategoryRepository.find();
   }
 
+  async getCategoriesWithAmenities() {
+    return this.amenityCategoryRepository.find({
+      relations: ["amenities"],
+      select: {
+        id: true,
+        name: true,
+        amenities: true,
+      },
+    });
+  }
+
   async findByIdOrFail(id: number) {
     const category = await this.amenityCategoryRepository.findOneBy({ id });
     if (!category) throw new NotFoundException("دسته بندی مورد نظر یافت نشد");
