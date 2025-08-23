@@ -1,11 +1,6 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, UpdateOptions } from "typeorm";
+import { Repository } from "typeorm";
 import { CreateAmenityCategoryDto, UpdateAmenityCategoryDto } from "../dto/amenity-category.dto";
 import { AmenityCategory } from "../entities/amenity-category.entity";
 
@@ -31,6 +26,10 @@ export class AmenityCategoryService {
     return {
       message: "دسته بندی با موفقیت ایجاد شد",
     };
+  }
+
+  async getCategories() {
+    return this.amenityCategoryRepository.find();
   }
 
   async findByIdOrFail(id: number) {

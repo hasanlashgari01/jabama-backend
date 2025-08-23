@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors } from "@nestjs/common";
 import { AnyFilesInterceptor } from "@nestjs/platform-express";
 import { ApiConsumes } from "@nestjs/swagger";
 import { RoleAccess } from "src/common/decorators/auth.decorator";
@@ -17,6 +17,12 @@ export class AmenityCategoryController {
   @UseInterceptors(AnyFilesInterceptor())
   create(@Body() createAmenityCategoryDto: CreateAmenityCategoryDto) {
     return this.amenityCategoryService.create(createAmenityCategoryDto);
+  }
+
+  @Get()
+  @RoleAccess(Role.ADMIN, Role.MODERATOR)
+  getCategories() {
+    return this.amenityCategoryService.getCategories();
   }
 
   @Put(":id")
