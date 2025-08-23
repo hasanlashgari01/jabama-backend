@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors } from "@nestjs/common";
 import { AmenityService } from "../services/amenity.service";
 import { RoleAccess } from "src/common/decorators/auth.decorator";
 import { ApiConsumes } from "@nestjs/swagger";
@@ -30,5 +30,11 @@ export class AmenityController {
   @UseInterceptors(AnyFilesInterceptor())
   update(@Param("id") id: string, @Body() updateAmenityDto: UpdateAmenityDto) {
     return this.amenityService.update(+id, updateAmenityDto);
+  }
+
+  @Delete(":id")
+  @RoleAccess(Role.ADMIN, Role.MODERATOR)
+  remove(@Param("id") id: string) {
+    return this.amenityService.remove(+id);
   }
 }

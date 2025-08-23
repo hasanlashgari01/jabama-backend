@@ -69,4 +69,16 @@ export class AmenityService {
       message: "ویژگی با موفقیت آپدیت شد",
     };
   }
+
+  async remove(id: number) {
+    await this.findByIdOrFail(id);
+
+    const amenity = await this.amenityRepository.delete(id);
+    if (amenity.affected === 0) throw new NotFoundException("ویژگی مورد نظر یافت نشد");
+
+    return {
+      message: "ویژگی با موفقیت حذف شد",
+      amenity,
+    };
+  }
 }
