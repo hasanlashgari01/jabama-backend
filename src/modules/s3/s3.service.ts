@@ -4,37 +4,38 @@ import { extname } from "path";
 
 @Injectable()
 export class S3Service {
-    private readonly s3: S3;
+  private readonly s3: S3;
 
-    constructor() {
-        this.s3 = new S3({
-            region: "default",
-            endpoint: process.env.S3_ENDPOINT,
-            credentials: {
-                accessKeyId: process.env.S3_ACCESS_KEY,
-                secretAccessKey: process.env.S3_SECRET_KEY,
-            },
-        });
-    }
+  constructor() {
+    this.s3 = new S3({
+      region: "default",
+      endpoint: process.env.S3_ENDPOINT,
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY,
+        secretAccessKey: process.env.S3_SECRET_KEY,
+      },
+    });
+  }
 
-    async uploadFile(file: Express.Multer.File, folderName: string) {
-        const ext = extname(file.originalname);
+  async uploadFile(file: Express.Multer.File, folderName: string) {
+    const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
 
-        return await this.s3
-            .upload({
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: `${folderName}/${Date.now()}${ext}`,
-                Body: file.buffer,
-            })
-            .promise();
-    }
+    return await this.s3
+      .upload({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: `${folderName}/${fileName}`,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      })
+      .promise();
+  }
 
-    async deleteFile(key: string) {
-        return await this.s3
-            .deleteObject({
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: decodeURI(key),
-            })
-            .promise();
-    }
+  async deleteFile(key: string) {
+    return await this.s3
+      .deleteObject({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: decodeURI(key),
+      })
+      .promise();
+  }
 }
