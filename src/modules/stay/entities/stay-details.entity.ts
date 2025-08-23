@@ -14,10 +14,10 @@ export class StayDetails {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "int", nullable: true })
+  @Column({ type: "int", default: 0 })
   floor: number; // طبقه اقامتگاه
 
-  @Column({ type: "int", nullable: true })
+  @Column({ type: "int", default: 0 })
   stairs: number; // تعداد پله ها
 
   @Column({ type: "int", default: 1 })
