@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
@@ -22,3 +22,5 @@ export class CreateAmenityDto {
   @IsNotEmpty()
   category_id: number;
 }
+
+export class UpdateAmenityDto extends PartialType(CreateAmenityDto) {}
