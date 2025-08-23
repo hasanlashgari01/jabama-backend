@@ -16,6 +16,9 @@ export class Amenity {
   @ManyToOne(() => AmenityCategory, (category) => category.amenities, { nullable: true })
   category: AmenityCategory; // دسته‌بندی این امکان (اختیاری، اگر null باشه بدون دسته)
 
+  @Column()
+  category_id: number;
+
   @OneToMany(() => StayAmenity, (stayAmenity) => stayAmenity.amenity)
   stayAmenities: StayAmenity[];
 }

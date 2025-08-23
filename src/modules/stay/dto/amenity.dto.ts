@@ -1,0 +1,24 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+
+export class CreateAmenityDto {
+  @ApiProperty({ description: "عنوان", example: "استخر", type: String })
+  @IsString()
+  name: string;
+
+  @ApiProperty({
+    description: "توضیحات دسته بندی",
+    default: "",
+    example: "توضیحات اضافی",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  description: string;
+
+  @ApiProperty({ description: "شناسه دسته بندی", example: "1" })
+  @Type(() => Number)
+  @IsNotEmpty()
+  category_id: number;
+}
