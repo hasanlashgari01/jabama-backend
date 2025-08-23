@@ -14,8 +14,7 @@ import { RoleAccess } from "src/common/decorators/auth.decorator";
 import { FormType } from "src/common/enum/form-type.enum";
 import { Role } from "src/common/enum/user.enum";
 import { FileValidationPipe } from "src/common/validations/file.validation";
-import { CreateStayDto } from "../dto/stay.dto";
-import { UpdateStayDto } from "../dto/amenity.dto";
+import { CreateStayDto, UpdateStayDto } from "../dto/stay.dto";
 import { StayService } from "../services/stay.service";
 
 @Controller("stay")

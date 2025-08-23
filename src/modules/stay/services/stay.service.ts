@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateStayDto } from "../dto/stay.dto";
-import { UpdateStayDto } from "../dto/amenity.dto";
+import { CreateStayDto, UpdateStayDto } from "../dto/stay.dto";
 import { Stay } from "../entities/stay.entity";
 import { S3Service } from "../../s3/s3.service";
 import { StayPhoto } from "../entities/stay-photo.entity";
