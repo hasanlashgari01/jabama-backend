@@ -5,9 +5,9 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, UpdateOptions } from "typeorm";
+import { CreateAmenityCategoryDto, UpdateAmenityCategoryDto } from "../dto/amenity-category.dto";
 import { AmenityCategory } from "../entities/amenity-category.entity";
-import { CreateAmenityCategoryDto } from "../dto/amenity-category.dto";
 
 @Injectable()
 export class AmenityCategoryService {
@@ -38,6 +38,21 @@ export class AmenityCategoryService {
     if (!category) throw new NotFoundException("دسته بندی مورد نظر یافت نشد");
 
     return category;
+  }
+
+  async update(id: number, updateAmenityCategoryDto: UpdateAmenityCategoryDto) {
+    const amenityCategory = await this.findByIdOrFail(id);
+
+    const { name, description } = updateAmenityCategoryDto;
+
+    if (name) amenityCategory.name = name;
+    if (description) amenityCategory.description = description;
+
+    await this.amenityCategoryRepository.update(id, amenityCategory);
+
+    return {
+      message: "دسته بندی با موفقیت آپدیت شد",
+    };
   }
 
   async remove(id: number) {
