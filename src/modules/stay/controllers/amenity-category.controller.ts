@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Post } from "@nestjs/common";
 import { ApiConsumes } from "@nestjs/swagger";
 import { RoleAccess } from "src/common/decorators/auth.decorator";
 import { FormType } from "src/common/enum/form-type.enum";
@@ -12,8 +12,14 @@ export class AmenityCategoryController {
 
   @Post()
   @RoleAccess(Role.ADMIN, Role.MODERATOR)
-  @ApiConsumes(FormType.Multipart)
+  @ApiConsumes(FormType.Json, FormType.Multipart)
   create(@Body() createAmenityCategoryDto: CreateAmenityCategoryDto) {
-    this.amenityCategoryService.create(createAmenityCategoryDto);
+    return this.amenityCategoryService.create(createAmenityCategoryDto);
+  }
+
+  @Delete(":id")
+  @RoleAccess(Role.ADMIN, Role.MODERATOR)
+  remove(@Param("id") id: string) {
+    return this.amenityCategoryService.remove(+id);
   }
 }
