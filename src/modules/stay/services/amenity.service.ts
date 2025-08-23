@@ -23,12 +23,18 @@ export class AmenityService {
     const newAmenity = await this.amenityRepository.create({
       name,
       description,
-      category_id,
     });
     this.amenityRepository.save(newAmenity);
 
     return {
       message: "ویژگی با موفقیت ایجاد شد",
     };
+  }
+
+  async getAmenities() {
+    return this.amenityRepository.find({
+      relations: ["category"],
+      select: { id: true, name: true },
+    });
   }
 }

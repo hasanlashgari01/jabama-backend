@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import { AmenityCategory } from "./amenity-category.entity";
 import { StayAmenity } from "./stay-amenity.entity";
 
@@ -14,10 +14,8 @@ export class Amenity {
   description: string; // توضیح اختیاری
 
   @ManyToOne(() => AmenityCategory, (category) => category.amenities, { nullable: true })
-  category: AmenityCategory; // دسته‌بندی این امکان (اختیاری، اگر null باشه بدون دسته)
-
-  @Column()
-  category_id: number;
+  @JoinColumn({ name: "category_id" })
+  category: AmenityCategory;
 
   @OneToMany(() => StayAmenity, (stayAmenity) => stayAmenity.amenity)
   stayAmenities: StayAmenity[];
