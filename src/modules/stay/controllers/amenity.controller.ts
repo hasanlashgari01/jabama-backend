@@ -14,7 +14,6 @@ export class AmenityController {
   @Post()
   @RoleAccess(Role.ADMIN, Role.MODERATOR)
   @ApiConsumes(FormType.Json, FormType.Multipart)
-  @UseInterceptors(AnyFilesInterceptor())
   create(@Body() createAmenityDto: CreateAmenityDto) {
     return this.amenityService.create(createAmenityDto);
   }
@@ -27,7 +26,6 @@ export class AmenityController {
   @Put(":id")
   @RoleAccess(Role.ADMIN, Role.MODERATOR)
   @ApiConsumes(FormType.Json, FormType.Multipart)
-  @UseInterceptors(AnyFilesInterceptor())
   update(@Param("id") id: string, @Body() updateAmenityDto: UpdateAmenityDto) {
     return this.amenityService.update(+id, updateAmenityDto);
   }

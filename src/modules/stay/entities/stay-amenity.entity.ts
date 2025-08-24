@@ -13,8 +13,11 @@ export class StayAmenity {
   @ManyToOne(() => Amenity, (amenity) => amenity.stayAmenities, { onDelete: "CASCADE" })
   amenity: Amenity;
 
-  @Column({ default: true })
+  @Column({ nullable: true })
   isAvailable: boolean;
+
+  @Column({ type: "int", nullable: true })
+  quantity: number;
 
   @Column({ nullable: true })
   customDescription: string;

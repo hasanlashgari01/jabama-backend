@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateStayDto, UpdateStayDto } from "../dto/stay.dto";
@@ -6,12 +6,16 @@ import { Stay } from "../entities/stay.entity";
 import { S3Service } from "../../s3/s3.service";
 import { StayPhoto } from "../entities/stay-photo.entity";
 import { v4 as uuidv4 } from "uuid";
+import { StayAmenity } from "../entities/stay-amenity.entity";
+import { Amenity } from "../entities/amenity.entity";
 
 @Injectable()
 export class StayService {
   constructor(
     @InjectRepository(Stay) private stayRepository: Repository<Stay>,
     @InjectRepository(StayPhoto) private stayPhotoRepository: Repository<StayPhoto>,
+    @InjectRepository(Amenity) private amenityRepository: Repository<Amenity>,
+    @InjectRepository(StayAmenity) private stayAmenityRepository: Repository<StayAmenity>,
     private s3Service: S3Service,
   ) {}
 
@@ -30,6 +34,7 @@ export class StayService {
       description_additional,
       host_id,
       city_id,
+      amenities,
     } = createStayDto;
 
     const newStay = await this.stayRepository.create({
@@ -48,10 +53,38 @@ export class StayService {
       host_id,
       city_id,
     });
+    if (!newStay) throw new ConflictException("");
+    await this.stayRepository.save(newStay);
 
     await this.uploadFiles(newStay.id, files);
 
-    return "This action adds a new stay";
+    if (amenities && amenities.length > 0) {
+      for (const amenityDto of amenities) {
+        const amenity = await this.amenityRepository.findOne({
+          where: { id: amenityDto.id },
+        });
+
+        if (!amenity) continue;
+
+        const stayAmenity = new StayAmenity();
+
+        stayAmenity.stay = newStay;
+        stayAmenity.amenity = amenity;
+        stayAmenity.isAvailable = amenityDto.isAvailable ?? true;
+        stayAmenity.isFree = amenityDto.isFree ?? false;
+        stayAmenity.quantity = amenityDto.quantity == 0 ? amenityDto.quantity : 0;
+        if (amenityDto.customDescription) {
+          stayAmenity.customDescription = amenityDto.customDescription;
+        }
+
+        await this.stayAmenityRepository.save(stayAmenity);
+      }
+    }
+
+    return {
+      message: "اقامتگاه در حال بررسی است",
+      stayId: newStay.id,
+    };
   }
 
   findAll() {

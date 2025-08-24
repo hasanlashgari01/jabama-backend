@@ -1,7 +1,15 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
+import { IsEmpty, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
 import { StayArea, StayType } from "../enum/stay.enum";
+
+type AmenityItem = {
+  id: number;
+  isAvailable?: boolean;
+  isFree?: boolean;
+  quantity?: number;
+  customDescription?: string;
+};
 
 export class CreateStayDto {
   @ApiProperty({ description: "نام محل اقامت", example: "اجاره بوم گردی كوكه - واحد وگ" })
@@ -11,9 +19,11 @@ export class CreateStayDto {
   name: string;
 
   @ApiProperty({ description: "منطقه محل اقامت", enum: StayArea, example: StayArea.COASTAL })
+  @IsString()
   area: StayArea;
 
   @ApiProperty({ description: "نوع محل اقامت", enum: StayType, example: StayType.VILLA })
+  @IsString()
   type: StayType;
 
   @ApiProperty({ description: "آدرس محل اقامت", example: "مازندران - رامسر" })
@@ -48,24 +58,6 @@ export class CreateStayDto {
   @IsNotEmpty()
   city_id: number;
 
-  @ApiProperty({ description: "شناسه استان", example: 1 })
-  @Type(() => Number)
-  @IsNumber()
-  @IsNotEmpty()
-  province_id: number;
-
-  @ApiProperty({ description: "ظرفیت پایه اتاق", example: 1 })
-  @Type(() => Number)
-  @IsNumber()
-  @IsNotEmpty()
-  base_room_capacity: number;
-
-  @ApiProperty({ description: "ظرفیت اقامتگاه", example: 1 })
-  @Type(() => Number)
-  @IsNumber()
-  @IsNotEmpty()
-  max_capacity: number;
-
   @ApiProperty({
     description: "توضیحات اقامتگاه",
     example:
@@ -99,57 +91,25 @@ export class CreateStayDto {
   @IsString()
   description_additional?: string;
 
-  @ApiProperty({ description: "تعداد اتاق خواب", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  rooms: number;
-
-  @ApiProperty({ description: "تعداد تخت یک نفره", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  single_beds: number;
-
-  @ApiProperty({ description: "تعداد تخت دو نفره", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  double_beds: number;
-
-  @ApiProperty({ description: "تعداد تخت سنتی", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  traditional_beds: number;
-
-  @ApiProperty({ description: "تعداد حمام", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  bathrooms: number;
-
-  @ApiProperty({ description: "تعداد سرویس بهداشتی فرنگی", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  western_toilets: number;
-
-  @ApiProperty({ description: "تعداد سرویس بهداشتی ایرانی", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  iranian_toilets: number;
-
-  @ApiProperty({ description: "تعداد پارکینگ", example: 1, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  parking_spaces: number;
-
-  @ApiProperty({ description: "تعداد پله ها", example: 0, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  stairs?: number;
-
-  @ApiProperty({ description: "طبقه اقامتگاه", example: 0, required: false })
-  @Type(() => Number)
-  @IsNumber()
-  floor: number;
+  @ApiProperty({
+    description: "لیست امکانات اقامتگاه",
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "number", example: 1 },
+        isAvailable: { type: "boolean", example: true },
+        isFree: { type: "boolean", example: false },
+        quantity: { type: "number", example: 3 },
+        customDescription: { type: "string", example: "تخت دو نفره بزرگ" },
+      },
+    },
+  })
+  @IsNotEmpty()
+  amenities: AmenityItem[];
 
   @ApiProperty({ type: "array", items: { type: "string", format: "binary" } })
+  @IsEmpty()
   images: string[];
 }
 

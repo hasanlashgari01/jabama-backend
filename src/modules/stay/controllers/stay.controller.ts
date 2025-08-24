@@ -23,7 +23,7 @@ export class StayController {
 
   @Post()
   @RoleAccess(Role.HOST)
-  @ApiConsumes(FormType.Multipart)
+  @ApiConsumes(FormType.Json, FormType.Multipart)
   @UseInterceptors(FilesInterceptor("images"))
   create(
     @Body() createStayDto: CreateStayDto,
