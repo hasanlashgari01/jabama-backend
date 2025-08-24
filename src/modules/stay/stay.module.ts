@@ -12,9 +12,12 @@ import { StayService } from "./services/stay.service";
 import { AmenityCategory } from "./entities/amenity-category.entity";
 import { Amenity } from "./entities/amenity.entity";
 import { StayAmenity } from "./entities/stay-amenity.entity";
+import { City } from "../city/entities/city.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Stay, StayPhoto, AmenityCategory, StayAmenity, Amenity])],
+  imports: [
+    TypeOrmModule.forFeature([Stay, StayPhoto, AmenityCategory, StayAmenity, Amenity, City]),
+  ],
   controllers: [StayController, AmenityCategoryController, AmenityController],
   providers: [StayService, AmenityCategoryService, AmenityService, S3Service],
 })

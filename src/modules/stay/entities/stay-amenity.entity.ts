@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Stay } from "./stay.entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Amenity } from "./amenity.entity";
+import { Stay } from "./stay.entity";
 
 @Entity()
 export class StayAmenity {
@@ -8,20 +8,28 @@ export class StayAmenity {
   id: number;
 
   @ManyToOne(() => Stay, (stay) => stay.stayAmenities, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "stayId" })
   stay: Stay;
 
+  @Column()
+  stayId: number;
+
   @ManyToOne(() => Amenity, (amenity) => amenity.stayAmenities, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "amenityId" })
   amenity: Amenity;
 
+  @Column()
+  amenityId: number;
+
   @Column({ nullable: true })
-  isAvailable: boolean;
+  is_available: boolean;
 
   @Column({ type: "int", nullable: true })
   quantity: number;
 
   @Column({ nullable: true })
-  customDescription: string;
+  custom_description: string;
 
   @Column({ default: false })
-  isFree: boolean;
+  is_free: boolean;
 }

@@ -1,15 +1,44 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsEmpty, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  ValidateNested,
+} from "class-validator";
 import { StayArea, StayType } from "../enum/stay.enum";
 
-type AmenityItem = {
-  id: number;
+export class AmenityItemDto {
+  @ApiProperty({ description: "شناسه امکانات", example: 1 })
+  @IsNumber()
+  @IsNotEmpty()
+  amenity_id: number;
+
+  @ApiProperty({ description: "وضعیت در دسترس بودن", example: true, required: false })
+  @IsBoolean()
+  @IsOptional()
   isAvailable?: boolean;
+
+  @ApiProperty({ description: "رایگان بودن", example: false, required: false })
+  @IsBoolean()
+  @IsOptional()
   isFree?: boolean;
+
+  @ApiProperty({ description: "تعداد", example: 2, required: false })
+  @IsNumber()
+  @IsOptional()
   quantity?: number;
+
+  @ApiProperty({ description: "توضیحات سفارشی", example: "تلویزیون 50 اینچ", required: false })
+  @IsString()
+  @IsOptional()
   customDescription?: string;
-};
+}
 
 export class CreateStayDto {
   @ApiProperty({ description: "نام محل اقامت", example: "اجاره بوم گردی كوكه - واحد وگ" })
@@ -19,11 +48,11 @@ export class CreateStayDto {
   name: string;
 
   @ApiProperty({ description: "منطقه محل اقامت", enum: StayArea, example: StayArea.COASTAL })
-  @IsString()
+  @IsEnum(StayArea)
   area: StayArea;
 
   @ApiProperty({ description: "نوع محل اقامت", enum: StayType, example: StayType.VILLA })
-  @IsString()
+  @IsEnum(StayType)
   type: StayType;
 
   @ApiProperty({ description: "آدرس محل اقامت", example: "مازندران - رامسر" })
@@ -39,18 +68,14 @@ export class CreateStayDto {
   @ApiProperty({ description: "عرض جغرافیایی محل اقامت", example: 35.6892, required: false })
   @Type(() => Number)
   @IsNumber()
+  @IsOptional()
   latitude?: number;
 
   @ApiProperty({ description: "طول جغرافیایی محل اقامت", example: 51.389, required: false })
   @Type(() => Number)
   @IsNumber()
+  @IsOptional()
   longitude?: number;
-
-  @ApiProperty({ description: "شناسه میزبان", example: 1 })
-  @Type(() => Number)
-  @IsNumber()
-  @IsNotEmpty()
-  host_id: number;
 
   @ApiProperty({ description: "شناسه شهر", example: 1 })
   @Type(() => Number)
@@ -73,6 +98,7 @@ export class CreateStayDto {
     required: false,
   })
   @IsString()
+  @IsOptional()
   description_space?: string;
 
   @ApiProperty({
@@ -81,6 +107,7 @@ export class CreateStayDto {
     required: false,
   })
   @IsString()
+  @IsOptional()
   description_shared_space?: string;
 
   @ApiProperty({
@@ -89,27 +116,23 @@ export class CreateStayDto {
     required: false,
   })
   @IsString()
+  @IsOptional()
   description_additional?: string;
 
-  @ApiProperty({
-    description: "لیست امکانات اقامتگاه",
-    type: "array",
-    items: {
-      type: "object",
-      properties: {
-        id: { type: "number", example: 1 },
-        isAvailable: { type: "boolean", example: true },
-        isFree: { type: "boolean", example: false },
-        quantity: { type: "number", example: 3 },
-        customDescription: { type: "string", example: "تخت دو نفره بزرگ" },
-      },
-    },
-  })
+  @ApiProperty({ description: "لیست امکانات اقامتگاه", type: () => AmenityItemDto })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AmenityItemDto)
   @IsNotEmpty()
-  amenities: AmenityItem[];
+  amenities: AmenityItemDto[];
 
-  @ApiProperty({ type: "array", items: { type: "string", format: "binary" } })
-  @IsEmpty()
+  @ApiProperty({
+    description: "تصاویر اقامتگاه",
+    type: "array",
+    items: { type: "string", format: "binary" },
+  })
+  @IsArray()
+  @IsOptional()
   images: string[];
 }
 

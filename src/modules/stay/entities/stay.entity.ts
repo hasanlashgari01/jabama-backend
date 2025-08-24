@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -84,7 +85,7 @@ export class Stay {
   @OneToMany(() => StayReview, (review) => review.stay, { cascade: true })
   reviews: StayReview[];
 
-  @OneToMany(() => StayAmenity, (stayAmenity) => stayAmenity.amenity, { cascade: true })
+  @OneToMany(() => StayAmenity, (stayAmenity) => stayAmenity.stay, { cascade: true })
   stayAmenities: StayAmenity[];
 
   @OneToMany(() => StayPricing, (stayPricing) => stayPricing.stay, { cascade: true })
@@ -97,7 +98,7 @@ export class Stay {
   bookings: StayBooking[]; // رزروها
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
