@@ -33,6 +33,7 @@ export class StayService {
 
     const stay = this.stayRepository.create({
       ...stayData,
+      slug: this.generateUniqueSlug(),
       city,
       city_id,
       host_id: sub,
@@ -71,60 +72,6 @@ export class StayService {
     return savedStay;
   }
 
-  /*   
-  async create(createStayDto: CreateStayDto, files: Array<Express.Multer.File>) {
-    const {
-      name,
-      address,
-      meterage,
-      area,
-      latitude,
-      longitude,
-      type,
-      description,
-      description_space,
-      description_shared_space,
-      description_additional,
-      city_id,
-      amenities,
-    } = createStayDto;
-
-    const newStay = await this.stayRepository.create({
-      name,
-      slug: this.generateUniqueSlug(),
-      address,
-      meterage,
-      area,
-      latitude,
-      longitude,
-      type,
-      description,
-      description_space,
-      description_shared_space,
-      description_additional,
-      city_id,
-    });
-    if (!newStay) throw new ConflictException("ایجاد اقامتگاه با مشکل مواجه شد");
-    await this.stayRepository.save(newStay);
-
-    await this.uploadFiles(newStay.id, files);
-
-    await this.stayAmenityRepository.insert({
-      stay_id: newStay.id,
-      // amenity_id: ,
-      quantity,
-      is_available,
-      is_free,
-      custom_description,
-    });
-
-    return {
-      message: "اقامتگاه در حال بررسی است",
-      stayId: newStay.id,
-    };
-  } 
-  */
-
   findAll() {
     return this.stayRepository.find();
   }
@@ -152,6 +99,15 @@ export class StayService {
 
   remove(id: number) {
     return `This action removes a #${id} stay`;
+  }
+
+  getAmenities(stayId: number) {
+    return this.stayAmenityRepository.find({
+      where: {
+        stayId,
+      },
+      relations: ["amenity", "amenity.category"],
+    });
   }
 
   generateUniqueSlug(): string {
