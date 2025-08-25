@@ -14,7 +14,7 @@ import { ApiConsumes } from "@nestjs/swagger";
 import { RoleAccess } from "src/common/decorators/auth.decorator";
 import { FormType } from "src/common/enum/form-type.enum";
 import { Role } from "src/common/enum/user.enum";
-import { FileValidationPipe } from "src/common/validations/file.validation";
+import { IconValidationPipe } from "src/common/validations/icon.validation";
 import { CreateAmenityDto, UpdateAmenityDto } from "../dto/amenity.dto";
 import { AmenityService } from "../services/amenity.service";
 
@@ -28,7 +28,7 @@ export class AmenityController {
   @UseInterceptors(FileInterceptor("icon"))
   create(
     @Body() createAmenityDto: CreateAmenityDto,
-    @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
+    @UploadedFile(new IconValidationPipe()) file: Express.Multer.File,
   ) {
     return this.amenityService.create(createAmenityDto, file);
   }
@@ -45,7 +45,7 @@ export class AmenityController {
   update(
     @Param("id") id: string,
     @Body() updateAmenityDto: UpdateAmenityDto,
-    @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
+    @UploadedFile(new IconValidationPipe()) file: Express.Multer.File,
   ) {
     return this.amenityService.update(+id, updateAmenityDto, file);
   }

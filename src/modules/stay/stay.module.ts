@@ -18,7 +18,7 @@ import { City } from "../city/entities/city.entity";
   imports: [
     TypeOrmModule.forFeature([Stay, StayPhoto, AmenityCategory, StayAmenity, Amenity, City]),
   ],
-  controllers: [StayController, AmenityCategoryController, AmenityController],
+  controllers: [AmenityCategoryController, AmenityController, StayController],
   providers: [StayService, AmenityCategoryService, AmenityService, S3Service],
 })
 export class StayModule {}

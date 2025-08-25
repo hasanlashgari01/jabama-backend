@@ -3,7 +3,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiConsumes } from "@nestjs/swagger";
 import { Authorization } from "src/common/decorators/auth.decorator";
 import { FormType } from "src/common/enum/form-type.enum";
-import { FileValidationPipe } from "src/common/validations/file.validation";
+import { ImageValidationPipe } from "src/common/validations/image.validation";
 import { ProfileDto } from "./dto/profile.dto";
 import { UsersService } from "./users.service";
 
@@ -16,7 +16,7 @@ export class UsersController {
   @ApiConsumes(FormType.Multipart)
   @UseInterceptors(FileInterceptor("avatar"))
   updateProfile(
-    @UploadedFile(new FileValidationPipe()) avatarFile: Express.Multer.File,
+    @UploadedFile(new ImageValidationPipe()) avatarFile: Express.Multer.File,
     @Body() profileDto: ProfileDto,
   ) {
     return this.usersService.updateProfile(avatarFile, profileDto);

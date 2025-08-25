@@ -11,14 +11,13 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { ApiConsumes, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiConsumes } from "@nestjs/swagger";
 import { RoleAccess } from "src/common/decorators/auth.decorator";
 import { FormType } from "src/common/enum/form-type.enum";
 import { Role } from "src/common/enum/user.enum";
-import { FileValidationPipe } from "src/common/validations/file.validation";
+import { ImageValidationPipe } from "src/common/validations/image.validation";
 import { CreateStayDto, UpdateStayDto } from "../dto/stay.dto";
 import { StayService } from "../services/stay.service";
-import { Stay } from "../entities/stay.entity";
 
 @Controller("stay")
 export class StayController {
@@ -31,7 +30,7 @@ export class StayController {
   @UsePipes(new ValidationPipe({ transform: true }))
   create(
     @Body() createStayDto: CreateStayDto,
-    @UploadedFiles(new FileValidationPipe({ isArray: true })) files: Express.Multer.File[],
+    @UploadedFiles(new ImageValidationPipe({ isArray: true })) files: Express.Multer.File[],
   ) {
     return this.stayService.create(createStayDto, files);
   }
@@ -39,6 +38,11 @@ export class StayController {
   @Get()
   findAll() {
     return this.stayService.findAll();
+  }
+
+  @Get("/:stayId/amenities")
+  getAmenities(@Param("stayId") stayId: string) {
+    return this.stayService.getAmenities(+stayId);
   }
 
   @Get(":id")
