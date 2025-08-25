@@ -51,7 +51,7 @@ export class AmenityService {
     return category;
   }
 
-  async update(id: number, updateAmenityDto: UpdateAmenityDto) {
+  async update(id: number, updateAmenityDto: UpdateAmenityDto, file: Express.Multer.File) {
     const amenity = await this.findByIdOrFail(id);
     const { name, description, category_id } = updateAmenityDto;
 
@@ -59,13 +59,16 @@ export class AmenityService {
       const isExist = await this.amenityRepository.findOneBy({ name });
       if (isExist && amenity.name !== name) throw new ConflictException("عنوان ویژگی قبلا ثبت شده");
 
-      console.log(1);
       amenity.name = name;
     }
     if (description) amenity.description = description;
     if (category_id) {
       const amenityCategory = await this.amenityCategoryService.findByIdOrFail(category_id);
       amenity.category = amenityCategory;
+    }
+    if (file) {
+      const { Location } = await this.s3Service.uploadFile(file, "icon");
+      amenity.icon_url = Location;
     }
 
     await this.amenityRepository.update(id, amenity);

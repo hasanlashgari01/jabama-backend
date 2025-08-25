@@ -41,8 +41,13 @@ export class AmenityController {
   @Put(":id")
   @RoleAccess(Role.ADMIN, Role.MODERATOR)
   @ApiConsumes(FormType.Json, FormType.Multipart)
-  update(@Param("id") id: string, @Body() updateAmenityDto: UpdateAmenityDto) {
-    return this.amenityService.update(+id, updateAmenityDto);
+  @UseInterceptors(FileInterceptor("icon"))
+  update(
+    @Param("id") id: string,
+    @Body() updateAmenityDto: UpdateAmenityDto,
+    @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
+  ) {
+    return this.amenityService.update(+id, updateAmenityDto, file);
   }
 
   @Delete(":id")
