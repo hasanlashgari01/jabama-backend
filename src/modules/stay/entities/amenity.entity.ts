@@ -11,6 +11,9 @@ export class Amenity {
   name: string; // نام امکان، مثل 'تلویزیون', 'استخر'
 
   @Column({ nullable: true })
+  icon_url: string;
+
+  @Column({ nullable: true })
   description: string; // توضیح اختیاری
 
   @ManyToOne(() => AmenityCategory, (category) => category.amenities, { nullable: true })

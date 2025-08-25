@@ -1,11 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors } from "@nestjs/common";
-import { AmenityService } from "../services/amenity.service";
-import { RoleAccess } from "src/common/decorators/auth.decorator";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiConsumes } from "@nestjs/swagger";
-import { AnyFilesInterceptor } from "@nestjs/platform-express";
-import { Role } from "src/common/enum/user.enum";
+import { RoleAccess } from "src/common/decorators/auth.decorator";
 import { FormType } from "src/common/enum/form-type.enum";
+import { Role } from "src/common/enum/user.enum";
+import { FileValidationPipe } from "src/common/validations/file.validation";
 import { CreateAmenityDto, UpdateAmenityDto } from "../dto/amenity.dto";
+import { AmenityService } from "../services/amenity.service";
 
 @Controller("amenity")
 export class AmenityController {
@@ -14,8 +25,12 @@ export class AmenityController {
   @Post()
   @RoleAccess(Role.ADMIN, Role.MODERATOR)
   @ApiConsumes(FormType.Json, FormType.Multipart)
-  create(@Body() createAmenityDto: CreateAmenityDto) {
-    return this.amenityService.create(createAmenityDto);
+  @UseInterceptors(FileInterceptor("icon"))
+  create(
+    @Body() createAmenityDto: CreateAmenityDto,
+    @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
+  ) {
+    return this.amenityService.create(createAmenityDto, file);
   }
 
   @Get()

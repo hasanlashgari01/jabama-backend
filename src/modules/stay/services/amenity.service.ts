@@ -4,15 +4,17 @@ import { Repository } from "typeorm";
 import { CreateAmenityDto, UpdateAmenityDto } from "../dto/amenity.dto";
 import { Amenity } from "../entities/amenity.entity";
 import { AmenityCategoryService } from "./amenity-category.service";
+import { S3Service } from "src/modules/s3/s3.service";
 
 @Injectable()
 export class AmenityService {
   constructor(
     @InjectRepository(Amenity) private amenityRepository: Repository<Amenity>,
     private amenityCategoryService: AmenityCategoryService,
+    private s3Service: S3Service,
   ) {}
 
-  async create(createAmenityDto: CreateAmenityDto) {
+  async create(createAmenityDto: CreateAmenityDto, file: Express.Multer.File) {
     const { name, description, category_id } = createAmenityDto;
 
     const category = await this.amenityCategoryService.findByIdOrFail(category_id);
@@ -20,10 +22,13 @@ export class AmenityService {
     const amenity = await this.amenityRepository.findOneBy({ name });
     if (amenity) throw new ConflictException(`عنوان ${name} وجود دارد`);
 
+    const { Location } = await this.s3Service.uploadFile(file, "icon");
+
     const newAmenity = await this.amenityRepository.create({
       name,
       description,
       category,
+      icon_url: Location,
     });
     this.amenityRepository.save(newAmenity);
 

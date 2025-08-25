@@ -7,8 +7,12 @@ export class CreateAmenityDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ description: "آیکون امکانات", type: "string", format: "binary" })
+  @IsOptional()
+  icon: string;
+
   @ApiProperty({
-    description: "توضیحات دسته بندی",
+    description: "توضیحات",
     default: "",
     example: "توضیحات اضافی",
     required: false,
