@@ -1,9 +1,9 @@
+import { City } from "src/modules/city/entities/city.entity";
 import { User } from "src/modules/users/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -11,14 +11,13 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { StayArea, StayStatus, StayType } from "../enum/stay.enum";
-import { StayDetails } from "./stay-details.entity";
-import { StayPhoto } from "./stay-photo.entity";
-import { StayReview } from "./stay-review.entity";
 import { StayAmenity } from "./stay-amenity.entity";
 import { StayAvailability } from "./stay-availability.entity";
 import { StayBooking } from "./stay-booking.entity";
+import { StayDetails } from "./stay-details.entity";
+import { StayPhoto } from "./stay-photo.entity";
 import { StayPricing } from "./stay-pricing.entity";
-import { City } from "src/modules/city/entities/city.entity";
+import { StayReview } from "./stay-review.entity";
 
 @Entity()
 export class Stay {
