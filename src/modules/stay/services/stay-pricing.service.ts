@@ -76,6 +76,16 @@ export class StayPricingService {
     };
   }
 
+  async getPricingByDate(stayId: number, date: Date): Promise<StayPricing> {
+    const pricing = await this.pricingRepository.findOne({
+      where: { stay: { id: stayId }, date },
+      relations: ["stay"],
+    });
+    if (!pricing) throw new NotFoundException("قیمت برای تاریخ مشخص‌شده یافت نشد");
+
+    return pricing;
+  }
+
   private getDateRange(start: Date, end: Date): Date[] {
     const dates: Date[] = [];
     let currentDate = new Date(start);

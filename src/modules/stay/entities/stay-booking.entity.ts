@@ -21,12 +21,10 @@ export class StayBooking {
   @Column({ type: "varchar", length: 50, unique: true })
   bookingReference: string;
 
-  @Index("idx_staybooking_dates")
   @Column({ type: "date" })
   @IsDate()
   startDate: Date;
 
-  @Index("idx_staybooking_dates")
   @Column({ type: "date" })
   @IsDate()
   endDate: Date;
