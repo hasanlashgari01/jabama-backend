@@ -82,8 +82,8 @@ export class AuthService {
     otp.is_used = true;
     await this.otpRepository.save(otp);
 
-    const access_token = await this.createAccessToken({ sub: user.id });
-    const refresh_token = await this.createRefreshToken({ sub: user.id });
+    const access_token = this.createAccessToken({ sub: user.id });
+    const refresh_token = this.createRefreshToken({ sub: user.id });
 
     return {
       access_token,
@@ -124,7 +124,7 @@ export class AuthService {
 
     try {
       const user = await this.findUserById(sub);
-      const access_token = await this.createAccessToken({
+      const access_token = this.createAccessToken({
         sub: user.id,
       });
 
@@ -143,7 +143,7 @@ export class AuthService {
     return user;
   }
 
-  async createAccessToken(payload: TokenPayload) {
+  createAccessToken(payload: TokenPayload) {
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>("ACCESS_TOKEN_SECRET"),
       expiresIn: this.configService.get<string>("ACCESS_TOKEN_EXPIRE_IN"),
@@ -152,7 +152,7 @@ export class AuthService {
     return accessToken;
   }
 
-  async createRefreshToken(payload: TokenPayload) {
+  createRefreshToken(payload: TokenPayload) {
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>("REFRESH_TOKEN_SECRET"),
       expiresIn: this.configService.get<string>("REFRESH_TOKEN_EXPIRE_IN"),
